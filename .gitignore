@@ -1,6 +1,8 @@
 # Credentials and keys
 credentials/
 gcp-oauth.keys.json
+.env
+.env.*
 
 # Claude Code files (exclude all except agents)
 .claude/*
