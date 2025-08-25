@@ -1,0 +1,19 @@
+# Credentials and keys
+credentials/
+gcp-oauth.keys.json
+
+# Claude Code files (exclude all except agents)
+.claude/*
+!.claude/agents/
+
+# IDE files
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
