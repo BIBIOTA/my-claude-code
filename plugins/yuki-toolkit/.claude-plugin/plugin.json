@@ -1,11 +1,27 @@
 {
   "name": "yuki-toolkit",
   "description": "個人助理工具包：專業跑步教練 agent + Google Workspace 整合 + MCP server 配置模板",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": {
     "name": "BIBIOTA"
   },
-  "keywords": ["running", "strava", "garmin", "calendar", "notion", "google-workspace", "gws", "drive", "sheets", "docs", "gmail"],
-  "agents": ["./agents/running-coach-zh-tw.md"],
-  "skills": ["./skills/gws-reference/SKILL.md"]
+  "keywords": [
+    "running",
+    "strava",
+    "garmin",
+    "calendar",
+    "notion",
+    "google-workspace",
+    "gws",
+    "drive",
+    "sheets",
+    "docs",
+    "gmail"
+  ],
+  "agents": [
+    "./agents/running-coach-zh-tw.md"
+  ],
+  "skills": [
+    "./skills/gws-reference/SKILL.md"
+  ]
 }
