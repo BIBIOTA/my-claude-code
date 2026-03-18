@@ -1,167 +1,48 @@
-# Claude Code 個人小秘書
+# Yuki Marketplace
 
-這是一個基於 Claude Code 的個人助理專案，整合了 Google Calendar、Strava 和 Notion MCP 伺服器，提供日曆管理、運動數據追蹤和跑步訓練管理功能。
+個人 Claude Code plugin marketplace，整合跑步教練、日曆管理、運動數據分析等工具。
 
-## 功能特色
+## 快速安裝
 
-- **Google Calendar 整合**：管理行程、建立事件、查詢空閒時間
-- **Strava 整合**：追蹤運動數據、分析活動記錄
-- **Notion 整合**：管理跑步訓練記錄和馬拉松訓練計畫
-- **智能助理**：透過 Claude Code 提供自然語言交互
+```bash
+# 在 Claude Code 中執行
+/plugin marketplace add BIBIOTA/my-claude-code
+/plugin install yuki-toolkit@yuki-marketplace
+```
+
+安裝後需手動設定 MCP servers，詳見 [MCP 配置指南](plugins/yuki-toolkit/mcp-config.md)。
+
+## Plugin: yuki-toolkit
+
+### 🏃 跑步教練 Agent
+
+專業繁體中文跑步教練代理，提供：
+
+- Strava 跑步數據分析（配速、心率、步頻）
+- Garmin 進階數據整合
+- Google Calendar 訓練計畫管理
+- Notion 訓練記錄與課表同步
+- 個人化心率區間設定與監控
+- 80/20 訓練強度分配指導
+
+### 📡 MCP Server 配置模板
+
+提供以下 MCP server 的 `claude mcp add` 指令模板：
+
+| Server | 用途 | 套件 |
+|--------|------|------|
+| Google Calendar | 日曆管理 | `@cocal/google-calendar-mcp` |
+| Strava | 運動數據 | `strava-mcp` (手動設定) |
+| Notion | 筆記管理 | `@notionhq/notion-mcp-server` |
+| Garmin | 穿戴裝置數據 | `garmin_mcp` (Python/UV) |
+| Gmail | 郵件管理 | `@gongrzhe/server-gmail-autoauth-mcp` |
+| Chrome DevTools | 瀏覽器自動化 | `chrome-devtools-mcp` |
 
 ## 前置需求
 
-### Google Calendar MCP
-- Google Cloud 專案
-- 啟用 Calendar API
-- OAuth 2.0 認證檔案（Desktop app 類型）
+- [Claude Code](https://claude.com/claude-code) CLI
+- 各 MCP server 對應的帳號和 API 認證（詳見配置指南）
 
-### Strava MCP
-- Node.js (建議 v18 或更新版本)
-- npm
-- Strava 帳號
+## 授權
 
-### Notion MCP
-- Node.js 和 npm
-- Notion 帳號
-- Notion Internal Integration
-
-## 安裝套件
-
-### 1. Google Calendar MCP 伺服器
-
-#### 方法一：使用 NPX（推薦）
-無需手動安裝，直接在 Claude Code 設定中使用 `@cocal/google-calendar-mcp` 套件
-
-#### 方法二：本地安裝
-```bash
-git clone https://github.com/nspady/google-calendar-mcp.git
-cd google-calendar-mcp
-npm install
-npm run build
-```
-
-### 2. Strava MCP 伺服器
-
-```bash
-git clone https://github.com/r-huijts/strava-mcp.git
-cd strava-mcp
-npm install
-npm run build
-```
-
-#### Strava API 設定
-1. 在 https://www.strava.com/settings/api 建立 Strava API 應用程式
-2. 設定 "Authorization Callback Domain" 為 `localhost`
-3. 記錄 Client ID 和 Client Secret
-4. 執行驗證設定：
-```bash
-npx tsx scripts/setup-auth.ts
-```
-
-### 3. Notion MCP 伺服器
-
-#### 方法一：使用 NPX（推薦）
-無需手動安裝，直接在 Claude Code 設定中使用 `@notionhq/notion-mcp-server` 套件
-
-#### 方法二：本地安裝
-```bash
-npm install @notionhq/notion-mcp-server
-```
-
-#### Notion Integration 設定
-1. 登入 Notion，進入 [My Integrations](https://www.notion.so/my-integrations)
-2. 點擊 "New integration" 建立新的整合
-3. 輸入整合名稱（例如："Claude Code Assistant"）
-4. 選擇 "Internal integration" 類型
-5. 記錄 Internal Integration Token
-6. 在需要存取的 Notion 頁面中，點擊右上角 "..." → "Connect to" → 選擇你的整合
-
-## Claude Code MCP 伺服器設定
-
-### Google Calendar MCP
-
-#### NPX 方式（推薦）
-```bash
-claude mcp add google-calendar --env GOOGLE_OAUTH_CREDENTIALS=./credentials/gcp-oauth.keys.json -- npx @cocal/google-calendar-mcp
-```
-
-#### 本地安裝方式
-```bash
-claude mcp add google-calendar --env GOOGLE_OAUTH_CREDENTIALS=./credentials/gcp-oauth.keys.json -- node /path/to/google-calendar-mcp/dist/index.js
-```
-
-### Strava MCP
-
-```bash
-claude mcp add strava --env STRAVA_CLIENT_ID=your_client_id --env STRAVA_CLIENT_SECRET=your_client_secret --env STRAVA_ACCESS_TOKEN=your_access_token --env STRAVA_REFRESH_TOKEN=your_refresh_token -- node /path/to/strava-mcp/dist/server.js
-```
-
-### Notion MCP
-
-#### NPX 方式（推薦）
-```bash
-claude mcp add notion --env NOTION_TOKEN=your_internal_integration_token -- npx -y @notionhq/notion-mcp-server
-```
-
-#### 本地安裝方式
-```bash
-claude mcp add notion --env NOTION_TOKEN=your_internal_integration_token -- node /path/to/node_modules/@notionhq/notion-mcp-server/dist/index.js
-```
-
-詳細的 MCP 設定說明請參考：[Claude Code MCP 文件](https://docs.anthropic.com/en/docs/claude-code/mcp)
-
-## 必要檔案設定
-
-### 1. Google Cloud Platform 認證檔案
-
-建立 `credentials/` 資料夾並放入 Google OAuth 金鑰檔案：
-
-```bash
-mkdir -p credentials
-# 將你的 gcp-oauth.keys.json 檔案放入 credentials/ 資料夾
-```
-
-### 2. Strava 認證設定
-
-執行 Strava 認證設定後，會自動產生所需的 access token 和 refresh token。
-
-### 3. Notion Integration Token
-
-建立 Notion Internal Integration 後，會獲得 Integration Token，格式為 `ntn_****`。
-
-## 注意事項
-
-- `credentials/gcp-oauth.keys.json` 檔案包含 Google API 認證資訊，已加入 `.gitignore`
-- Google Calendar 在測試模式下，token 會在 7 天後過期，需要重新認證
-- Notion Integration Token 包含敏感資訊，請妥善保管
-- 請確保妥善保管這些認證檔案，不要公開分享
-
-## 首次使用
-
-1. 啟動 Claude Code
-2. Google Calendar 會開啟瀏覽器進行 OAuth 驗證流程
-3. Strava 驗證已在設定階段完成
-4. Notion 需要確保 Integration 已連接到相關頁面
-5. 完成驗證後即可開始使用
-
-## 使用方式
-
-設定完成後，即可在 Claude Code 中使用相關功能：
-
-### Google Calendar 功能
-- 詢問行程安排
-- 建立、修改、刪除日曆事件
-- 查詢空閒時間
-
-### Strava 功能
-- 查詢運動數據
-- 分析活動記錄
-- 匯出路線檔案
-
-### Notion 功能
-- 管理跑步訓練記錄
-- 更新馬拉松訓練計畫
-- 創建和編輯訓練分析頁面
-
-開始享受你的個人 AI 秘書服務吧！
+MIT
