@@ -1,0 +1,10 @@
+{
+  "name": "yuki-toolkit",
+  "description": "個人助理工具包：專業跑步教練 agent + MCP server 配置模板",
+  "version": "1.0.0",
+  "author": {
+    "name": "BIBIOTA"
+  },
+  "keywords": ["running", "strava", "garmin", "calendar", "notion"],
+  "agents": ["./agents/running-coach-zh-tw.md"]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "yuki-marketplace",
+  "owner": {
+    "name": "BIBIOTA"
+  },
+  "metadata": {
+    "description": "個人 Claude Code 工具集：跑步教練、日曆、運動數據分析"
+  },
+  "plugins": [
+    {
+      "name": "yuki-toolkit",
+      "source": "./plugins/yuki-toolkit",
+      "description": "整合 Google Calendar、Strava、Notion、Garmin 的個人助理工具包"
+    }
+  ]
+}
