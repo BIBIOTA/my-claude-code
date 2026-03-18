@@ -20,6 +20,10 @@
 
 參考 `plugins/yuki-toolkit/mcp-config.md` 中的指令模板，替換為你自己的認證資訊。
 
+## 開發注意事項
+
+- **不要手動修改 `plugin.json` 的 `version` 欄位** — CI 會在 merge 到 master 時自動 bump patch version（見 `.github/workflows/auto-version-bump.yml`）
+
 ## Plugin 內容
 
 ### yuki-toolkit
