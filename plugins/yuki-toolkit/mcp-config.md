@@ -2,18 +2,34 @@
 
 安裝 `yuki-toolkit` plugin 後，需要手動設定以下 MCP server。每個指令中的 `<placeholder>` 需替換為你自己的認證資訊。
 
-## Google Calendar
+## Google Workspace (gws CLI)
+
+Google Calendar、Gmail、Drive、Sheets、Docs 等 Google Workspace 服務統一透過 `gws` CLI 操作，不需要個別的 MCP server。
+
+**安裝**
 
 ```bash
-claude mcp add google-calendar \
-  --env GOOGLE_OAUTH_CREDENTIALS=<path-to-gcp-oauth.keys.json> \
-  -- npx @cocal/google-calendar-mcp
+npm install -g @googleworkspace/cli
 ```
 
-**前置需求**
+**認證**
 
-- Google Cloud 專案 (啟用 Calendar API)
-- OAuth 2.0 認證檔案 (Desktop app 類型)
+```bash
+gws auth login
+```
+
+需要 Google Cloud 專案的 OAuth 2.0 認證。設定方式：
+1. 建立 Google Cloud 專案，啟用所需 API（Calendar、Gmail、Drive、Sheets、Docs）
+2. 建立 OAuth 2.0 Client ID（Desktop app 類型）
+3. 設定環境變數：
+   ```bash
+   export GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE=<path-to-oauth-credentials.json>
+   ```
+4. 執行 `gws auth login` 完成瀏覽器授權流程
+
+**使用方式**
+
+透過 `google-workspace-zh-tw` agent 或直接在終端使用 `gws` 指令。指令格式參考請載入 `gws-reference` skill。
 
 ## Strava
 
@@ -72,23 +88,6 @@ claude mcp add garmin -- uvx \
 
 ```bash
 uvx --python 3.12 --from 'git+https://github.com/Taxuspt/garmin_mcp' garmin-mcp-auth
-```
-
-## Gmail
-
-```bash
-claude mcp add gmail -- npx @gongrzhe/server-gmail-autoauth-mcp
-```
-
-**前置需求**
-
-- Google Cloud 專案 (啟用 Gmail API)
-- OAuth 認證檔案放置於 `~/.gmail-mcp/gcp-oauth.keys.json`
-
-首次使用前，執行以下指令完成認證：
-
-```bash
-npx @gongrzhe/server-gmail-autoauth-mcp auth
 ```
 
 ## Chrome DevTools
