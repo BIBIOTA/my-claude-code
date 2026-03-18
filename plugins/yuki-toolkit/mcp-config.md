@@ -29,7 +29,7 @@ gws auth login
 
 **使用方式**
 
-透過 `google-workspace-zh-tw` agent 或直接在終端使用 `gws` 指令。指令格式參考請載入 `gws-reference` skill。
+直接在終端使用 `gws` 指令，或載入 `gws-reference` skill 取得完整指令格式參考。
 
 ## Strava
 

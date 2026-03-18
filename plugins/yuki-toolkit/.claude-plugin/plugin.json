@@ -6,6 +6,6 @@
     "name": "BIBIOTA"
   },
   "keywords": ["running", "strava", "garmin", "calendar", "notion", "google-workspace", "gws", "drive", "sheets", "docs", "gmail"],
-  "agents": ["./agents/running-coach-zh-tw.md", "./agents/google-workspace-zh-tw.md"],
+  "agents": ["./agents/running-coach-zh-tw.md"],
   "skills": ["./skills/gws-reference/SKILL.md"]
 }

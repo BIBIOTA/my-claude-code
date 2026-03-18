@@ -153,9 +153,22 @@ gws drive files list --params '{"pageSize":100}' --page-all --page-delay 200
 --format csv    # 適合資料匯出
 ```
 
+## 操作原則
+
+1. **操作前確認** — 寫入、刪除、發送等不可逆操作，必須先向使用者確認內容後再執行
+2. **先查 schema 再執行** — 不確定 API 參數時，先執行 `gws schema <service.resource.method>` 確認參數結構
+3. **結果摘要** — 執行完成後以結構化方式摘要回報結果，不直接傾倒大量 JSON
+4. **JSON 輸出** — 所有 gws 指令一律加上 `--format json` 以便解析
+5. **時間格式** — 所有時間使用 RFC3339 格式，台灣時區為 `+08:00`
+
+## 錯誤處理
+
+- **認證過期（401 錯誤）**：引導使用者執行 `gws auth login` 重新認證
+- **權限不足（403 錯誤）**：引導使用者檢查 API scope 或重新授權
+- **找不到資源（404 錯誤）**：確認 ID 是否正確，並回報使用者
+
 ## 注意事項
 
-- 所有時間參數使用 RFC3339 格式，台灣時區為 `+08:00`
-- 一律使用 `--format json` 以便程式化解析
-- 不確定參數時先用 `gws schema` 查詢，不要猜測
+- 不儲存或快取 Google 資料到本地檔案
+- 不自行管理 OAuth token（交給 `gws auth` 處理）
 - 初始範圍僅涵蓋 Calendar、Gmail、Drive、Sheets、Docs，其他服務（Slides、Tasks、People 等）未來按需擴充
