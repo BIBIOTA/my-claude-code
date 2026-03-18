@@ -29,13 +29,12 @@
 
 提供以下 MCP server 的 `claude mcp add` 指令模板：
 
-| Server | 用途 | 套件 |
-|--------|------|------|
-| Google Calendar | 日曆管理 | `@cocal/google-calendar-mcp` |
+| Server | 用途 | 套件/工具 |
+|------------------|--------------------------|---------------------------------------|
+| Google Workspace | 日曆、郵件、雲端硬碟等 | `@anthropic-ai/gws` (`gws` CLI) |
 | Strava | 運動數據 | `strava-mcp` (手動設定) |
 | Notion | 筆記管理 | `@notionhq/notion-mcp-server` |
 | Garmin | 穿戴裝置數據 | `garmin_mcp` (Python/UV) |
-| Gmail | 郵件管理 | `@gongrzhe/server-gmail-autoauth-mcp` |
 | Chrome DevTools | 瀏覽器自動化 | `chrome-devtools-mcp` |
 
 ## 前置需求

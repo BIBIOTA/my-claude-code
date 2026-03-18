@@ -1,28 +1,25 @@
 # Yuki Marketplace
 
-個人 Claude Code plugin marketplace，整合跑步教練 agent 和常用 MCP server 配置，方便在不同電腦間快速設定。
+個人 Claude Code plugin marketplace（BIBIOTA/my-claude-code）。
 
-## 安裝方式
-
-### 1. 新增 Marketplace
+## 目錄結構
 
 ```
-/plugin marketplace add BIBIOTA/my-claude-code
+plugins/yuki-toolkit/
+├── .claude-plugin/plugin.json   # plugin 註冊（agents, skills, metadata）
+├── agents/                       # Agent 定義（.md frontmatter 格式）
+├── skills/                       # Skill 定義（.md frontmatter 格式）
+└── mcp-config.md                 # MCP server 設定指南
 ```
 
-### 2. 安裝 Plugin
+## 開發規則
 
-```
-/plugin install yuki-toolkit@yuki-marketplace
-```
+- **不要手動修改 `plugin.json` 的 `version`** — CI merge 到 master 時自動 bump patch version（`.github/workflows/auto-version-bump.yml`）
+- **Google Workspace 操作統一用 `gws` CLI** — 不使用個別 MCP server。指令參考見 `plugins/yuki-toolkit/skills/gws-reference/SKILL.md`
+- **Agent/Skill 檔案使用 YAML frontmatter** — 開頭和結尾都要有 `---` 分隔線
 
-### 3. 設定 MCP Servers
+## Git 慣例
 
-參考 `plugins/yuki-toolkit/mcp-config.md` 中的指令模板，替換為你自己的認證資訊。
-
-## Plugin 內容
-
-### yuki-toolkit
-
-- **跑步教練 Agent** (`running-coach-zh-tw`) — 專業繁體中文跑步教練，整合 Strava、Garmin、Google Calendar、Notion 進行訓練分析和計畫管理
-- **MCP Server 配置模板** — Google Calendar、Strava、Notion、Garmin、Gmail、Chrome DevTools 的設定指南
+- Branch: `feat/<feature-name>`
+- PR target: `master`
+- Commit prefix: `feat:`, `fix:`, `refactor:`, `docs:`, `chore:`
