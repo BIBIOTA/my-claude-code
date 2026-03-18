@@ -4,10 +4,6 @@ gcp-oauth.keys.json
 .env
 .env.*
 
-# Claude Code files (exclude all except agents)
-.claude/*
-!.claude/agents/
-
 # IDE files
 .vscode/
 .idea/
