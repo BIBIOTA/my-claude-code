@@ -1,7 +1,7 @@
 # Google Workspace CLI (gws) 整合設計
 
 **日期：** 2026-03-18
-**狀態：** Draft
+**狀態：** Approved
 
 ## 目標
 
@@ -11,7 +11,7 @@
 
 - Google Calendar 透過 `@cocal/google-calendar-mcp` MCP server 存取
 - Gmail 透過 `@gongrzhe/server-gmail-autoauth-mcp` MCP server 存取
-- Running Coach agent 直接呼叫 MCP tools（如 `mcp__google-calender__list-events`）
+- Running Coach agent 直接呼叫 MCP tools（如 `mcp__google-calender__list-events`，注意：原始 MCP tool 名稱中 "calender" 為既有拼寫錯誤）
 - Drive、Sheets、Docs 目前無整合
 
 ## 設計方案：Agent + Skill 組合
@@ -48,7 +48,11 @@ gws CLI → Google Workspace APIs
 
 1. **認證設定**
    - `gws auth login` 流程
-   - 環境變數：`GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE`、`GOOGLE_WORKSPACE_CLI_CLIENT_ID`、`GOOGLE_WORKSPACE_CLI_CLIENT_SECRET`
+   - 環境變數：
+     - `GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE` — OAuth 認證檔案路徑
+     - `GOOGLE_WORKSPACE_CLI_CLIENT_ID` / `GOOGLE_WORKSPACE_CLI_CLIENT_SECRET` — OAuth client 資訊
+     - `GOOGLE_WORKSPACE_CLI_TOKEN` — 預先取得的 access token（最高優先）
+     - `GOOGLE_WORKSPACE_CLI_CONFIG_DIR` — 覆寫設定目錄（預設 `~/.config/gws`）
    - 認證過期時的處理方式
 
 2. **通用指令格式**
@@ -66,6 +70,8 @@ gws CLI → Google Workspace APIs
 
    **Calendar：**
    - 列出事件：`gws calendar events list --params '{"calendarId":"primary","timeMin":"...","timeMax":"..."}'`
+   - 搜尋事件（關鍵字）：`gws calendar events list --params '{"calendarId":"primary","q":"跑步","timeMin":"...","timeMax":"..."}'`
+     （注意：Google Calendar API 沒有獨立的 search method，使用 `events list` 的 `q` 參數進行關鍵字搜尋，取代原 MCP 的 `search-events`）
    - 建立事件：`gws calendar events insert --params '{"calendarId":"primary"}' --json '{"summary":"...","start":{...},"end":{...}}'`
    - 更新事件：`gws calendar events patch --params '{"calendarId":"primary","eventId":"..."}' --json '{...}'`
    - 刪除事件：`gws calendar events delete --params '{"calendarId":"primary","eventId":"..."}'`
@@ -75,6 +81,12 @@ gws CLI → Google Workspace APIs
    - 讀取郵件：`gws gmail users messages get --params '{"userId":"me","id":"...","format":"full"}'`
    - 搜尋郵件：使用 `q` 參數搭配 Gmail 搜尋語法
    - 發送郵件：`gws gmail users messages send --params '{"userId":"me"}' --json '{"raw":"<base64>"}'`
+     構建 raw MIME 範例：
+     ```bash
+     # 建構 base64 編碼的 MIME 訊息
+     RAW=$(printf 'From: me\r\nTo: recipient@example.com\r\nSubject: Test\r\nContent-Type: text/plain; charset=utf-8\r\n\r\nHello' | base64 | tr -d '\n' | tr '+/' '-_' | tr -d '=')
+     gws gmail users messages send --params '{"userId":"me"}' --json "{\"raw\":\"$RAW\"}"
+     ```
 
    **Drive：**
    - 列出檔案：`gws drive files list --params '{"q":"...","pageSize":10}'`
@@ -101,6 +113,8 @@ gws CLI → Google Workspace APIs
    - `--format json`（預設，推薦用於程式化處理）
    - `--format table`（適合人類閱讀）
    - `--format csv`（適合資料匯出）
+
+**初始範圍：** 僅涵蓋 Calendar、Gmail、Drive、Sheets、Docs 五個服務。gws CLI 支援的其他服務（Slides、Tasks、People、Chat、Classroom、Forms、Keep、Meet 等）暫不納入，未來按需擴充。
 
 **觸發條件（description）：**
 > Use when you need to operate Google Workspace services (Calendar, Gmail, Drive, Sheets, Docs) via the gws CLI. Provides command format reference, authentication setup, and usage examples for all supported services.
@@ -137,11 +151,28 @@ gws CLI → Google Workspace APIs
 
 **修改：**
 1. `running-coach-zh-tw.md` — Google Calendar 操作從 MCP tool 呼叫改為 dispatch `google-workspace-zh-tw` agent
-   - `mcp__google-calender__list-events` → dispatch agent 查詢行事曆
-   - `mcp__google-calender__search-events` → dispatch agent 搜尋事件
-   - 雙向同步（Calendar + Notion）的操作流程改為透過 agent
+
+   **修改前（現行 MCP 呼叫）：**
+   ```
+   1. mcp__google-calender__list-events: 查詢該日期範圍的所有行事曆事件
+   2. mcp__google-calender__search-events: 如有需要，使用關鍵字搜尋特定跑步訓練事件
+   ```
+
+   **修改後（Agent dispatch）：**
+   ```
+   1. 使用 google-workspace-zh-tw agent 查詢該日期範圍的所有行事曆事件
+   2. 如有需要，使用 google-workspace-zh-tw agent 以關鍵字搜尋特定跑步訓練事件
+   ```
+
+   Running Coach agent 內的所有 `mcp__google-calender__*` 引用都改為描述性的 agent dispatch 指示。Claude Code 會根據 agent description 自動路由到正確的 agent。雙向同步（Calendar + Notion）的操作流程同樣改為透過 agent。
+
 2. `mcp-config.md` — 新增 `gws` CLI 認證設定說明，取代移除的兩個 MCP server
-3. `plugin.json` — 新增 skills 和 agents 路徑
+
+3. `plugin.json` — 更新內容：
+   - `agents` 陣列新增 `"./agents/google-workspace-zh-tw.md"`
+   - 新增 `skills` 陣列：`["./skills/gws-reference/SKILL.md"]`
+   - `description` 更新為 `"個人助理工具包：專業跑步教練 agent + Google Workspace 整合 + MCP server 配置模板"`
+   - `keywords` 新增 `"google-workspace"`, `"gws"`, `"drive"`, `"sheets"`, `"docs"`, `"gmail"`
 
 **新增：**
 1. `plugins/yuki-toolkit/skills/gws-reference/SKILL.md` — gws 指令參考 Skill
@@ -156,4 +187,23 @@ gws CLI → Google Workspace APIs
 1. **gws auth 狀態**：需確認 `gws auth login` 已完成且 token 有效，否則所有操作都會失敗
 2. **Running Coach 相依性**：修改 Running Coach 的 Google Calendar 呼叫方式是最敏感的變更，需確保「Google Calendar 絕對優先原則」在新架構下仍能正確執行
 3. **Agent dispatch 延遲**：從直接 MCP tool 呼叫改為 dispatch agent，會增加一層間接性和少量延遲
-4. **Gmail raw 格式**：發送郵件需要 base64 編碼的 raw MIME，agent 需要能正確處理這個轉換
+4. **Gmail raw 格式**：發送郵件需要 base64 編碼的 raw MIME，Skill 中已提供建構範例
+
+## 驗收標準
+
+1. **認證驗證**：`gws calendar events list --params '{"calendarId":"primary","timeMin":"...","timeMax":"..."}'` 成功返回事件
+2. **各服務煙霧測試**：
+   - Calendar：列出近 7 天事件
+   - Gmail：搜尋最近 5 封郵件
+   - Drive：列出根目錄檔案
+   - Sheets：讀取指定試算表的儲存格
+   - Docs：讀取指定文件內容
+3. **Running Coach 端對端測試**：執行一次「查看特定日期跑步活動」完整流程，驗證 Google Calendar 絕對優先原則仍正確運作
+4. **Agent dispatch 驗證**：從主對話 dispatch google-workspace-zh-tw agent 完成一次 Calendar 查詢
+
+## 回滾計畫
+
+若遷移後發現問題（如 gws auth 不穩定、agent dispatch 延遲不可接受）：
+1. `mcp-config.md` 中保留原 MCP server 設定的 git 歷史，可隨時透過 `git revert` 恢復
+2. `running-coach-zh-tw.md` 同理，git 歷史保留完整的 MCP tool 呼叫版本
+3. 新增的 Agent 和 Skill 檔案不影響原有功能，可安全共存
