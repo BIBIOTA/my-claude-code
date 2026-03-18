@@ -30,7 +30,15 @@ claude mcp add strava \
 
 - Strava 帳號
 - 在 https://www.strava.com/settings/api 建立 API 應用程式
-- 執行 `npx tsx scripts/setup-auth.ts` 取得 tokens
+- 下載並建置 `strava-mcp`：
+  ```bash
+  git clone https://github.com/r-huijts/strava-mcp.git
+  cd strava-mcp
+  npm install
+  npm run build
+  npx tsx scripts/setup-auth.ts  # 執行驗證以取得 tokens
+  ```
+- 記下 `strava-mcp` 的本機路徑，在上方指令中替換 `<path-to-strava-mcp>`
 
 ## Notion
 
@@ -49,7 +57,7 @@ claude mcp add notion \
 ## Garmin
 
 ```bash
-claude mcp add garmin -- /opt/homebrew/bin/uvx \
+claude mcp add garmin -- uvx \
   --python 3.12 \
   --from 'git+https://github.com/Taxuspt/garmin_mcp' \
   garmin-mcp

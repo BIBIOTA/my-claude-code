@@ -32,7 +32,7 @@
 | Server | 用途 | 套件 |
 |--------|------|------|
 | Google Calendar | 日曆管理 | `@cocal/google-calendar-mcp` |
-| Strava | 運動數據 | `strava-mcp` |
+| Strava | 運動數據 | `strava-mcp` (手動設定) |
 | Notion | 筆記管理 | `@notionhq/notion-mcp-server` |
 | Garmin | 穿戴裝置數據 | `garmin_mcp` (Python/UV) |
 | Gmail | 郵件管理 | `@gongrzhe/server-gmail-autoauth-mcp` |
