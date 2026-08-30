@@ -26,6 +26,7 @@
     "./skills/notion-article-import",
     "./skills/writing-skills",
     "./skills/create-pr",
-    "./skills/job-application-recommendation-letter"
+    "./skills/job-application-recommendation-letter",
+    "./skills/canon-cr3-to-jpeg"
   ]
 }
