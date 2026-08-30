@@ -1,6 +1,6 @@
 {
   "name": "spec-driven-dev",
-  "version": "0.1.32",
+  "version": "0.1.33",
   "description": "Spec-driven development pipeline: brainstorming → plans → (UML/Figma) → OpenSpec → SDD/TDD → verification. Each step gated by user review; artifacts converge in openspec/changes/{change-id}/.",
   "author": {
     "name": "BIBIOTA"
