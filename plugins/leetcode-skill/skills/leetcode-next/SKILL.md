@@ -51,6 +51,7 @@ When checking if a weak-areas pattern "covers" a standard pattern, use fuzzy/con
 
 - Read `.leetcode/performance/weak-areas.md` (note which patterns have been recorded).
 - Read `.leetcode/performance/next-history.md`. If missing or empty, treat `call-count` as 0.
+- Read `.leetcode/performance/log.md` before choosing suggestions. Treat every problem number recorded there as already practised, regardless of its result or pattern label. When the log is unavailable, also check `solutions/` for existing solution slugs.
 
 ### 2. Update counter
 
@@ -88,7 +89,11 @@ Any standard pattern with zero attempts (not covered by any weak-areas entry) is
 
 ### 6. Suggest problems
 
-Suggest 2–3 well-known LeetCode problems for the chosen pattern. For each, provide:
+Suggest 2–3 well-known, **not-yet-practised** LeetCode problems for the chosen pattern. Match a candidate to prior work by problem number when available; otherwise compare normalized slugs/titles. Do not re-suggest a practised problem merely because it appears under a different pattern in `weak-areas.md`.
+
+If fewer than two unpractised Blind 75 problems directly fit the selected pattern, say so and offer the closest unpractised Blind 75 problems that reinforce the same broader technique. Only suggest an already-practised problem when explicitly recommending `/leetcode --review`, and label it as a review.
+
+For each, provide:
 - Problem number + name
 - Difficulty (Easy / Medium / Hard)
 - Slug (so the user can construct the URL: `leetcode.com/problems/<slug>/`)
